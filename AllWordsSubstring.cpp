@@ -7,12 +7,10 @@
 using namespace std;
 
 bool DoesContentAnyWords(string::iterator str_iter,size_t str_size,vector<string>& words) {
-	bool any_words_left = false;
+	if (words.empty())
+		return true;
 
-	auto res = find_if(words.begin(), words.end(), [&any_words_left,str_iter,str_size](string s) {
-		if (s.empty())
-			return false;
-		any_words_left = true;
+	auto res = find_if(words.begin(), words.end(), [str_iter,str_size](string s) {
 		if (s.size() > str_size) 
 			return false;
 		if (*str_iter != s.front())
@@ -20,8 +18,6 @@ bool DoesContentAnyWords(string::iterator str_iter,size_t str_size,vector<string
 		return equal(s.begin(), s.end(), str_iter);
 		});
 
-	if (!any_words_left)
-		return true;
 	if (str_size == 0)
 		return false;
 
@@ -31,7 +27,7 @@ bool DoesContentAnyWords(string::iterator str_iter,size_t str_size,vector<string
 
 		str_size -= (*res).size();
 		str_iter += (*res).size();
-		*res = "";
+		words.erase(res);
 		
 		return DoesContentAnyWords(str_iter, str_size, words);
 
