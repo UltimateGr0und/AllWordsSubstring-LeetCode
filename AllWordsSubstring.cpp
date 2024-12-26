@@ -4,6 +4,7 @@
 #include<string>
 #include<list>
 #include<algorithm>
+#include<execution>
 
 using namespace std;
 
@@ -11,12 +12,12 @@ bool DoesContentAnyWords(string::iterator str_iter,size_t str_size,list<string>&
 	if (words.empty())
 		return true;
 
-	auto res = find_if(words.begin(), words.end(), [str_iter,str_size](string s) {
+	auto res = find_if(execution::par_unseq,words.begin(), words.end(), [str_iter,str_size](string s) {
 		if (s.size() > str_size) 
 			return false;
 		if (*str_iter != s.front())
 			return false;
-		return equal(s.begin(), s.end(), str_iter);
+		return equal(execution::par_unseq,s.begin(), s.end(), str_iter);
 		});
 
 	if (str_size == 0)
