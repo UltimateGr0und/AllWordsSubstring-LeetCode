@@ -12,12 +12,12 @@ bool DoesContentAnyWords(string::iterator str_iter,size_t str_size,list<string>&
 	if (words.empty())
 		return true;
 
-	auto res = find_if(execution::par_unseq,words.begin(), words.end(), [str_iter,str_size](string s) {
+	auto res = find_if(words.begin(), words.end(), [str_iter,str_size](const string &s) {
 		if (s.size() > str_size) 
 			return false;
 		if (*str_iter != s.front())
 			return false;
-		return equal(execution::par_unseq,s.begin(), s.end(), str_iter);
+		return equal(s.begin(), s.end(), str_iter);
 		});
 
 	if (str_size == 0)
@@ -41,14 +41,18 @@ bool DoesContentAnyWords(string::iterator str_iter,size_t str_size,list<string>&
 vector<int> findSubstring(string s, vector<string> words) {
 	list<string> words_list;
 	std::copy(words.begin(), words.end(), std::back_inserter(words_list));
+	list<string> temp(words_list);
 	vector<int> result{};
 	auto str_iter = s.begin();
 	for (size_t i = 0; i < s.size(); i++)
 	{
-		list<string> temp(words_list);
 		if (DoesContentAnyWords(str_iter,s.size()-i,temp))
 		{
 			result.push_back(i);
+		}
+		if (temp.size()!=words_list.size())
+		{
+			temp = list<string>(words_list);
 		}
 
 		str_iter++;
